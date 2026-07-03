@@ -1,0 +1,109 @@
+{
+  "lead": 0.8,
+  "tail": 1.8,
+  "total": 215.056,
+  "scenes": [
+    {
+      "i": 0,
+      "act": "intro",
+      "dur": 10.008,
+      "gap": 0.5
+    },
+    {
+      "i": 1,
+      "act": "problem",
+      "dur": 13.752,
+      "gap": 0.5
+    },
+    {
+      "i": 2,
+      "act": "overview",
+      "dur": 9.168,
+      "gap": 0.5
+    },
+    {
+      "i": 3,
+      "act": "chain",
+      "dur": 12.792,
+      "gap": 0.5
+    },
+    {
+      "i": 4,
+      "act": "truth_first",
+      "dur": 11.664,
+      "gap": 0.5
+    },
+    {
+      "i": 5,
+      "act": "determinism",
+      "dur": 10.848,
+      "gap": 0.5
+    },
+    {
+      "i": 6,
+      "act": "dirt_up",
+      "dur": 14.136,
+      "gap": 0.5
+    },
+    {
+      "i": 7,
+      "act": "corruption_map",
+      "dur": 11.472,
+      "gap": 0.5
+    },
+    {
+      "i": 8,
+      "act": "link_sweep",
+      "dur": 12.192,
+      "gap": 0.5
+    },
+    {
+      "i": 9,
+      "act": "disc",
+      "dur": 14.832,
+      "gap": 0.5
+    },
+    {
+      "i": 10,
+      "act": "throughput",
+      "dur": 10.92,
+      "gap": 0.5
+    },
+    {
+      "i": 11,
+      "act": "hover",
+      "dur": 11.688,
+      "gap": 0.5
+    },
+    {
+      "i": 12,
+      "act": "news_ships",
+      "dur": 14.136,
+      "gap": 0.5
+    },
+    {
+      "i": 13,
+      "act": "seed",
+      "dur": 8.784,
+      "gap": 0.5
+    },
+    {
+      "i": 14,
+      "act": "cli",
+      "dur": 14.688,
+      "gap": 0.5
+    },
+    {
+      "i": 15,
+      "act": "honest",
+      "dur": 13.68,
+      "gap": 0.5
+    },
+    {
+      "i": 16,
+      "act": "outro",
+      "dur": 9.696,
+      "gap": 0.5
+    }
+  ]
+}

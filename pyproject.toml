@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prism-datagen"
+version = "1.0.0"
+description = "确定性跨源数据包生成器 — messy multi-store benchmark data with pre-embedded, always-recoverable ground truth (clean-room, byte-reproducible)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = []  # core generator + CLI are pure stdlib
+
+[project.optional-dependencies]
+web = ["fastapi>=0.110", "uvicorn>=0.29"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+datagen = "datagen.cli:main"
+
+[tool.setuptools]
+packages = ["datagen"]
+
+[tool.setuptools.package-data]
+datagen = ["specs/*.json"]

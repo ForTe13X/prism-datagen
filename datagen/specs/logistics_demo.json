@@ -1,0 +1,63 @@
+{
+  "id": "logistics_demo",
+  "title": "物流跨源数据包",
+  "title_en": "Logistics cross-source data package",
+  "description": "示例场景:运单(SQL)+ 仓库吞吐量(时序)+ 港口/天气新闻(文本)。预埋『新闻事件 → 吞吐量异常 → 运单延误』的跨源因果真值,供 axiom-gain 基准用。确定性合成,clean-room。",
+  "seed": "logistics_demo",
+  "scenario": "event_anomaly_delay",
+  "params": {
+    "warehouses": 3,
+    "carriers": 4,
+    "shipments": 24,
+    "frames": 60,
+    "news_events": 8,
+    "ground_truth_events": 2,
+    "delay_window": 4
+  },
+  "regions": ["华东", "华南", "华北"],
+  "ports": ["宁波港", "盐田港", "天津港"],
+  "vocab": {
+    "hub": { "prefix": "WH", "id_width": 3, "name_suffix": "中心仓" },
+    "agent": { "prefix": "CR", "id_width": 3, "names": ["远洋速运", "华联物流", "中际货运", "顺捷供应链", "通达运输", "鹏程冷链"] },
+    "record": { "prefix": "SHP", "id_width": 4, "label": "运单", "measure_field": "weight_kg", "measure_range": [50, 1000], "unit": "kg" },
+    "metric": { "name": "throughput", "range": [200, 900] },
+    "status": { "initial": "in_transit", "affected": "delayed", "settle_high": "on_time", "settle_low": "in_transit", "settle_threshold": 0.3 },
+    "event": { "kinds": ["台风封港", "道路中断"] },
+    "aliases": { "华东": ["华東", "华东区", "HD"], "华南": ["华南区", "HN", "华南"], "华北": ["华北区", "HB"] },
+    "news": {
+      "l1": "{kind}影响 {hub_id}({hub_name});受影响{record_label}:{ids}。",
+      "l2": "{kind}波及『{region}{name_suffix}』一带,多批货受阻。",
+      "l3": "{kind}袭{region},约第 {frame} 帧前后港区作业受限。",
+      "l4": "第 {frame} 帧前后,某港口因{kind}临时停摆,吞吐骤降。",
+      "l5": "{kind}逼近{port}所在沿海,航运预计中断数日。",
+      "distractor": "{region}近日{kind},暂未见明显影响。",
+      "headline": "{kind}快讯",
+      "distractor_headline": "{region}{kind}提示"
+    }
+  },
+  "roles": {
+    "hub_store": "warehouses", "agent_store": "carriers", "record_store": "shipments", "metric_store": "throughput",
+    "record_hub_fk": "warehouse_id", "record_agent_fk": "carrier_id", "record_frame": "dispatch_frame",
+    "record_status": "status", "record_ids_field": "shipment_ids", "affected_status": "delayed"
+  },
+  "tasks": [
+    {
+      "id": "explain_delays",
+      "q": "哪些延误运单能由哪条新闻事件解释?",
+      "q_en": "Which delayed shipments does which news event explain?",
+      "needs": ["news", "timeseries", "sql"],
+      "answer_kind": "event_to_shipments"
+    },
+    {
+      "id": "anomaly_cause",
+      "q": "每个仓库的吞吐量异常发生在哪一帧,由哪条新闻引起?",
+      "q_en": "When did each warehouse's throughput anomaly occur, and which news caused it?",
+      "needs": ["timeseries", "news"],
+      "answer_kind": "warehouse_to_event_frame"
+    }
+  ],
+  "notes": {
+    "scope": "DP1 = 确定性生成器 + 跨源真值 + 脏度/link 显眼度旋钮 + 判别力探针。未做:§4b 真实校准(分布为手设合成,非逆向自真实数据)、§5 agentic 解析器、§3 PDF/NoSQL 多模态、RESEARCH 的 LLM-ablation 基准。",
+    "honesty": "真值始终保留;脏度与 link 显眼度只动观测。realistic-calibration 未做,数理分布是手设示意。"
+  }
+}

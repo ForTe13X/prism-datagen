@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>prism-datagen · 确定性跨源数据包生成器</title>
+<style>
+  :root{
+    --bg:#0e1116; --panel:#161b24; --panel2:#1c2331; --line:#2a3342; --ink:#e6edf6; --muted:#8b98ad;
+    --accent:#5aa9ff; --good:#3fd68c; --warn:#ffb454; --bad:#ff6b6b; --truth:#c792ea; --hl:#243049;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "Segoe UI","Microsoft YaHei",system-ui,sans-serif}
+  header{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  header h1{font-size:19px;margin:0;font-weight:650}
+  header .sub{color:var(--muted);font-size:12.5px}
+  header .det{margin-left:auto;font-size:11.5px;color:var(--good);border:1px solid color-mix(in srgb,var(--good) 40%,var(--line));border-radius:999px;padding:2px 10px}
+  .controls{display:flex;gap:22px;align-items:center;flex-wrap:wrap;padding:14px 22px;background:var(--panel);border-bottom:1px solid var(--line)}
+  .ctl{display:flex;flex-direction:column;gap:3px;min-width:140px}
+  .ctl label{font-size:11.5px;color:var(--muted)}
+  .ctl .val{font-weight:650;color:var(--accent)}
+  .ctl input[type=range]{width:180px;accent-color:var(--accent)}
+  .ctl input[type=text],.ctl select{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:7px;padding:6px 9px;font:inherit}
+  button{background:var(--accent);color:#06121f;border:0;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer}
+  button.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+  main{display:grid;grid-template-columns:minmax(360px,1fr) minmax(420px,1.25fr);gap:16px;padding:18px 22px;align-items:start}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+  .card h2{font-size:13.5px;margin:0 0 10px;color:var(--ink);font-weight:650;display:flex;gap:8px;align-items:center}
+  .card h2 .tag{font-size:10.5px;color:var(--muted);font-weight:500}
+  .muted{color:var(--muted)}
+  /* discriminability bars */
+  .bar{display:grid;grid-template-columns:64px 1fr 52px;gap:9px;align-items:center;margin:7px 0}
+  .bar .track{height:14px;background:var(--panel2);border-radius:7px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:7px}
+  .bar.naive .fill{background:var(--bad)} .bar.linked .fill{background:var(--good)} .bar.oracle .fill{background:var(--accent)}
+  .bar .n{text-align:right;font-variant-numeric:tabular-nums;font-weight:650}
+  .gap{margin-top:8px;font-size:12.5px}
+  /* truth chain */
+  .chain{border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin:8px 0;background:var(--panel2);cursor:pointer;transition:.12s}
+  .chain:hover,.chain.on{border-color:var(--truth);background:var(--hl)}
+  .chain .row1{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .pill{font-size:11px;border-radius:999px;padding:1px 8px;border:1px solid var(--line)}
+  .pill.truth{color:var(--truth);border-color:color-mix(in srgb,var(--truth) 50%,var(--line))}
+  .pill.wh{color:var(--accent)} .pill.frame{color:var(--warn)}
+  .chain .flow{font-size:12px;color:var(--muted);margin-top:5px}
+  .chain .flow b{color:var(--ink)} .chain .flow .arrow{color:var(--truth);margin:0 5px}
+  code{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:0 4px;font-size:12px;color:var(--good)}
+  /* corruption chips */
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-size:11.5px;border-radius:8px;padding:5px 9px;border:1px solid var(--line);background:var(--panel2)}
+  .chip b{color:var(--warn)} .chip.zero{color:var(--muted)}
+  /* throughput */
+  .tw{margin:9px 0}
+  .tw .lbl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-bottom:2px}
+  .tw.hl{background:var(--hl);border-radius:8px;padding:4px 6px;margin:6px -6px}
+  svg .series{fill:none;stroke:var(--accent);stroke-width:1.6}
+  svg .dip{stroke:var(--truth);stroke-width:1.4;stroke-dasharray:3 3}
+  svg .dipdot{fill:var(--truth)}
+  /* news + shipments */
+  .news{border-left:3px solid var(--line);padding:6px 10px;margin:6px 0;background:var(--panel2);border-radius:0 8px 8px 0}
+  .news.truth{border-left-color:var(--truth)}
+  .news .meta{font-size:11px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+  .news .body{margin-top:3px}
+  .flag{font-size:10px;border-radius:5px;padding:0 5px;margin-left:4px}
+  .flag.gar{background:color-mix(in srgb,var(--bad) 22%,transparent);color:var(--bad)}
+  .flag.time{background:color-mix(in srgb,var(--warn) 22%,transparent);color:var(--warn)}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{text-align:left;padding:4px 7px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{color:var(--muted);font-weight:600;position:sticky;top:0;background:var(--panel)}
+  tr.delayed td{color:var(--ink)} tr.delayed{background:color-mix(in srgb,var(--truth) 9%,transparent)}
+  tr.hl{outline:1px solid var(--truth)}
+  .u-lb{color:var(--warn)} .s-null{color:var(--bad)}
+  .scroll{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+  .err{color:var(--bad);padding:12px 22px}
+</style>
+</head>
+<body>
+<header>
+  <h1>prism-datagen</h1>
+  <span class="sub">确定性跨源数据包生成器 · 预埋真值 + 脏度/显眼度旋钮</span>
+  <span class="det" id="det">● 确定性 · 相同旋钮→逐字节可复现</span>
+</header>
+
+<div class="controls">
+  <div class="ctl">
+    <label>数据域 domain</label>
+    <select id="domain"></select>
+  </div>
+  <div class="ctl">
+    <label>脏度 dirtiness · <span class="val" id="dv">0.60</span></label>
+    <input type="range" id="dirt" min="0" max="1" step="0.05" value="0.6" />
+  </div>
+  <div class="ctl">
+    <label>显眼度 link_explicitness · <span class="val" id="lv">4</span></label>
+    <input type="range" id="link" min="1" max="5" step="1" value="4" />
+  </div>
+  <div class="ctl">
+    <label>种子 seed</label>
+    <input type="text" id="seed" value="ho-0" placeholder="ho-0" />
+  </div>
+  <button id="gen">重新生成</button>
+  <button class="ghost" id="rand">随机种子</button>
+</div>
+
+<div id="err" class="err" style="display:none"></div>
+<main id="main" style="display:none">
+  <div class="col">
+    <div class="card" id="c-disc">
+      <h2>判别力 <span class="tag">naive vs linked vs oracle · F1(越隐晦/越脏,literal 越崩,跨源联结越显价值)</span></h2>
+      <div id="disc"></div>
+    </div>
+    <div class="card">
+      <h2>跨源真值链 <span class="tag">新闻事件 → 吞吐量异常 → 延误运单(悬停高亮)</span></h2>
+      <div id="chain"></div>
+    </div>
+    <div class="card">
+      <h2>污染清单 corruption_map <span class="tag">variant→canonical · 只动观测,真值不动</span></h2>
+      <div class="chips" id="chips"></div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card">
+      <h2>吞吐量时序 throughput <span class="tag">每仓一条 · 真值事件在其帧刻出异常凹陷</span></h2>
+      <div id="tw"></div>
+    </div>
+    <div class="card">
+      <h2>新闻源 news <span class="tag">★=真值事件 · 其余为干扰 · 乱码/时移已标</span></h2>
+      <div id="news"></div>
+    </div>
+    <div class="card">
+      <h2>运单表 shipments <span class="tag">delayed 高亮 · lb=单位漂移 · null=状态置空</span></h2>
+      <div class="scroll"><table id="ship"></table></div>
+    </div>
+  </div>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+async function load(){
+  const specs = await (await fetch('/api/specs')).json();
+  const sel = $('#domain'); sel.innerHTML = specs.map(s=>`<option value="${s.id}">${esc(s.title)} (${s.id})</option>`).join('');
+  gen();
+}
+function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
+
+async function gen(){
+  $('#dv').textContent = (+$('#dirt').value).toFixed(2);
+  $('#lv').textContent = $('#link').value;
+  const q = new URLSearchParams({domain:$('#domain').value, dirtiness:$('#dirt').value, link:$('#link').value, seed:$('#seed').value});
+  const r = await fetch('/api/generate?'+q);
+  if(!r.ok){ $('#err').style.display='block'; $('#err').textContent='生成失败:'+r.status; $('#main').style.display='none'; return; }
+  $('#err').style.display='none'; $('#main').style.display='grid';
+  render(await r.json());
+}
+
+function render(pkg){
+  const roles = pkg.roles, rids = roles.record_ids_field, rhf = roles.record_hub_fk;
+  const events = pkg.ground_truth.events;
+  const newsToWh = {}, newsToShips = {};
+  for(const n of pkg.stores.news){ if(n._truth_event){ const ev = events.find(e=>e.id===n._truth_event); if(ev){ newsToWh[n.id]=ev[rhf]; newsToShips[n.id]=ev[rids]; } } }
+
+  // discriminability
+  const ev = pkg.evaluation;
+  const bar = (cls,name,v)=>`<div class="bar ${cls}"><span>${name}</span><div class="track"><div class="fill" style="width:${(v*100).toFixed(0)}%"></div></div><span class="n">${v.toFixed(3)}</span></div>`;
+  $('#disc').innerHTML = bar('naive','naive',ev.naive_f1)+bar('linked','linked',ev.linked_f1)+bar('oracle','oracle',ev.oracle_f1)
+    + `<div class="gap muted">gap(linked−naive) = <b style="color:${ev.gap>0?'var(--good)':'var(--muted)'}">${ev.gap>=0?'+':''}${ev.gap.toFixed(3)}</b> · 脏度 ${pkg.dirtiness} · 显眼度 ${pkg.link_explicitness}</div>`;
+
+  // truth chain
+  $('#chain').innerHTML = events.map(e=>{
+    const nid = Object.keys(pkg.ground_truth.answers.explain_delays).find(k=>newsToShips[k] && newsToWh[k]===e[rhf]) || '—';
+    return `<div class="chain" data-wh="${e[rhf]}" data-ships="${(e[rids]||[]).join(',')}">
+      <div class="row1"><span class="pill truth">${e.id}</span><span class="pill">${esc(e.kind)}</span>
+        <span class="pill wh">${e[rhf]} · ${esc(e.region)} · ${esc(e.port)}</span><span class="pill frame">frame ${e.frame}</span></div>
+      <div class="flow"><b>${nid}</b><span class="arrow">→</span>吞吐异常@${e.frame}<span class="arrow">→</span>延误 <code>${(e[rids]||[]).join(', ')}</code></div>
+    </div>`;
+  }).join('') || '<div class="muted">无真值事件</div>';
+
+  // corruption chips
+  const c = pkg.corruption_map;
+  const chip=(k,label,n)=> n>0 ? `<span class="chip"><b>${n}</b> ${label}</span>` : `<span class="chip zero">0 ${label}</span>`;
+  $('#chips').innerHTML = pkg.dirtiness<=0
+    ? '<span class="chip zero">脏度=0 · 观测未被污染</span>'
+    : chip('a','别名改写 identity',Object.keys(c.aliases).length)+chip('u','单位漂移 kg→lb',c.weight_lb_ids.length)
+      +chip('m','状态置空 missing',c.status_nulled_ids.length)+chip('t','时间偏移 time',Object.keys(c.news_time_offset).length)
+      +chip('e','编码乱码 encoding',c.garbled_news.length);
+
+  // throughput
+  const ts = pkg.stores.timeseries[roles.metric_store], frames = pkg.stores.timeseries.frames;
+  const anomalyFrame = {}; events.forEach(e=> anomalyFrame[e[rhf]] = e.frame);
+  $('#tw').innerHTML = Object.entries(ts).map(([wid,series])=>{
+    const W=380,H=44,max=Math.max(...series),min=Math.min(...series),rng=(max-min)||1;
+    const pts=series.map((v,i)=>`${(i/(frames-1)*W).toFixed(1)},${(H-4-(v-min)/rng*(H-8)).toFixed(1)}`).join(' ');
+    const af=anomalyFrame[wid], ax=af!=null?(af/(frames-1)*W):null;
+    return `<div class="tw" data-wh="${wid}"><div class="lbl"><span>${wid}</span><span>min ${min} / max ${max}${af!=null?` · 异常@${af}`:''}</span></div>
+      <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none">
+        <polyline class="series" points="${pts}"/>${ax!=null?`<line class="dip" x1="${ax.toFixed(1)}" y1="0" x2="${ax.toFixed(1)}" y2="${H}"/><circle class="dipdot" cx="${ax.toFixed(1)}" cy="${(H-4-(series[af]-min)/rng*(H-8)).toFixed(1)}" r="2.6"/>`:''}
+      </svg></div>`;
+  }).join('');
+
+  // news
+  const timeOff = c.news_time_offset||{}, garbled=new Set(c.garbled_news||[]);
+  $('#news').innerHTML = pkg.stores.news.map(n=>{
+    const truth = !!n._truth_event;
+    return `<div class="news ${truth?'truth':''}" data-wh="${newsToWh[n.id]||''}">
+      <div class="meta"><span>${n.id}</span><span>frame ${n.frame}</span><span>${esc(n.kind)}</span>
+        ${truth?'<span class="pill truth">★真值</span>':'<span class="muted">干扰</span>'}
+        ${garbled.has(n.id)?'<span class="flag gar">乱码</span>':''}${timeOff[n.id]!=null?`<span class="flag time">时移${timeOff[n.id]>0?'+':''}${timeOff[n.id]}</span>`:''}</div>
+      <div class="body">${esc(n.body)}</div></div>`;
+  }).join('');
+
+  // shipments
+  const lb=new Set(c.weight_lb_ids||[]), nulled=new Set(c.status_nulled_ids||[]);
+  const rows = pkg.stores.sql.shipments;
+  $('#ship').innerHTML = `<thead><tr><th>id</th><th>${rhf}</th><th>carrier</th><th>frame</th><th>weight</th><th>unit</th><th>status</th></tr></thead><tbody>`
+    + rows.map(s=>`<tr class="${s.status==='delayed'?'delayed':''}" data-id="${s.id}" data-wh="${s[rhf]}">
+        <td>${s.id}</td><td>${s[rhf]}</td><td>${s.carrier_id}</td><td>${s.dispatch_frame}</td>
+        <td>${s.weight_kg}</td><td class="${lb.has(s.id)?'u-lb':''}">${s.unit}</td>
+        <td class="${nulled.has(s.id)?'s-null':''}">${s.status===null?'∅null':s.status}</td></tr>`).join('') + '</tbody>';
+
+  // cross-source hover linking
+  document.querySelectorAll('.chain').forEach(el=>{
+    const wh=el.dataset.wh, ships=new Set((el.dataset.ships||'').split(',').filter(Boolean));
+    el.onmouseenter=()=>hl(wh,ships,true); el.onmouseleave=()=>hl(wh,ships,false);
+  });
+  function hl(wh,ships,on){
+    document.querySelectorAll(`.tw[data-wh="${wh}"]`).forEach(e=>e.classList.toggle('hl',on));
+    document.querySelectorAll('#ship tr[data-id]').forEach(tr=>{ if(ships.has(tr.dataset.id)) tr.classList.toggle('hl',on); });
+    document.querySelectorAll(`.news[data-wh="${wh}"]`).forEach(e=>e.classList.toggle('on',on));
+  }
+}
+
+$('#gen').onclick=gen;
+$('#rand').onclick=()=>{ $('#seed').value='ho-'+Math.floor(Math.random()*8); gen(); };
+$('#dirt').oninput=debounce(gen,120); $('#link').oninput=debounce(gen,120);
+$('#domain').onchange=gen; $('#seed').onkeydown=e=>{ if(e.key==='Enter') gen(); };
+load();
+</script>
+</body>
+</html>

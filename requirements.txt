@@ -1,0 +1,6 @@
+# The generator + CLI are PURE STDLIB (hashlib, json, csv, sqlite3, argparse) — zero deps.
+# The optional web UI needs a tiny ASGI stack; install these only if you run `server.py`:
+fastapi>=0.110
+uvicorn>=0.29
+# Dev/test only:
+pytest>=8.0

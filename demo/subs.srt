@@ -1,0 +1,85 @@
+1
+00:00:00,800 --> 00:00:10,808
+prism-datagen,是一个确定性的跨源数据包生成器。它生成的,是带着已知因果真值的脏数据。
+prism-datagen is a deterministic cross-source data generator. What it makes is messy data that carries a known causal ground truth.
+
+2
+00:00:11,308 --> 00:00:25,060
+要评测一个跨源解析器,你既需要脏数据,又需要真值。真实数据没有真值标注,纯合成又太干净。这个工具,两者兼得。
+To evaluate a cross-source resolver you need messy data AND ground truth. Real data has no labels; pure synthetic is too clean. This tool gives you both.
+
+3
+00:00:25,560 --> 00:00:34,728
+一次生成,你拿到三种源:关系型的运单表、每个仓的吞吐量时序、还有港口新闻文本。
+One run gives you three sources: a relational shipments table, per-warehouse throughput time-series, and port-news text.
+
+4
+00:00:35,228 --> 00:00:48,020
+真值是一条跨源因果链:一条新闻事件,引起某个仓的吞吐量异常,进而让若干运单延误。它在生成之前,就被预先埋好。
+The ground truth is a cross-source causal chain: a news event causes a warehouse throughput anomaly, which delays certain shipments — embedded before generation.
+
+5
+00:00:48,520 --> 00:01:00,184
+关键在于:真值先建,所有观测再向它对齐。所以真值永远可恢复 —— 知道答案的 oracle 解法,恒为满分。
+The key: truth is authored first, then every observation is made consistent with it. So the truth is always recoverable — the oracle solver always scores a perfect one.
+
+6
+00:01:00,684 --> 00:01:11,532
+整个过程完全确定性:相同的种子和旋钮,逐字节可复现。没有随机,没有时钟,只有 sha256。
+The whole process is fully deterministic: same seed and knobs, byte-for-byte reproducible. No random, no clock — just sha256.
+
+7
+00:01:12,032 --> 00:01:26,168
+第一个旋钮,是脏度。把它拉高,观测开始被污染:别名改写、单位从公斤漂成磅、状态被置空、时间偏移、还有编码乱码。
+The first knob is dirtiness. Turn it up and observations get corrupted: aliased names, kilograms drifting to pounds, nulled statuses, time shifts, and mojibake.
+
+8
+00:01:26,668 --> 00:01:38,140
+但每一处污染,都被记进 corruption_map,是可逆的 变体到规范 映射。而真值,一个字都没有动。
+But every corruption is logged into the corruption map as a reversible variant-to-canonical entry. And the truth — not one character changed.
+
+9
+00:01:38,640 --> 00:01:50,832
+第二个旋钮,是显眼度:新闻把它命中哪些运单,暴露得多明显。从直接写出 id,一路降到只剩纯语义线索。
+The second knob is link-explicitness: how conspicuously the news reveals which shipments it hits — from literal ids down to pure semantic hints.
+
+10
+00:01:51,332 --> 00:02:06,164
+看判别力:显眼度一降,靠字面匹配的 naive 解法立刻崩到零;而做跨源联结的 linked 解法,仍然能恢复。这说明任务确实需要跨源推理。
+Watch the discriminability: as explicitness drops, the literal naive solver collapses to zero, while the cross-source linked solver still recovers. The task genuinely needs cross-source reasoning.
+
+11
+00:02:06,664 --> 00:02:17,584
+每个仓一条吞吐量曲线;真值事件,会在它那一帧刻出一道异常凹陷 —— 这就是连接新闻与运单的中间证据。
+Each warehouse has a throughput curve; the true event carves an anomaly dip at its frame — the middle evidence linking news to shipments.
+
+12
+00:02:18,084 --> 00:02:29,772
+把鼠标悬到任意一条真值链上,它命中的仓、那道凹陷、和被延误的运单,会同时高亮 —— 一眼看清整条跨源链路。
+Hover any ground-truth chain and its warehouse, that dip, and the delayed shipments light up together — the whole cross-source path at a glance.
+
+13
+00:02:30,272 --> 00:02:44,408
+新闻里,真值事件标了星,干扰项被压暗,乱码和时移都打了标记;运单表里,延误的行会高亮,漂成磅的、被置空的,也一目了然。
+In the news, true events are starred, distractors dimmed, garble and time-shift flagged; in the shipments table, delayed rows glow, and pounds-drift and nulled status stand out.
+
+14
+00:02:44,908 --> 00:02:53,692
+换一个种子,就是另一个平行世界;换回来,分毫不差。这,就是确定性的意义。
+Change the seed and you get another parallel world; change it back and it's identical to the byte. That's what determinism buys you.
+
+15
+00:02:54,192 --> 00:03:08,880
+同一个生成器,也有命令行:一条命令,生成、评测、导出成 JSON、CSV,和可以直接查询的 SQLite;而核心,零依赖。
+The same generator has a CLI: one command to generate, evaluate, and export to JSON, CSV, and a directly-queryable SQLite — and the core has zero dependencies.
+
+16
+00:03:09,380 --> 00:03:23,060
+诚实的边界也要说清:分布是手设合成、没有做真实校准;这里的 linked,只是确定性的占位替身,真正的语义求解,留给未来的大模型。
+The honest limits, stated plainly: distributions are hand-set, not calibrated to real data; the linked solver here is a deterministic stand-in — real semantic solving is left to a future LLM.
+
+17
+00:03:23,560 --> 00:03:33,256
+确定性、真值始终可恢复、两个旋钮调难度、多模态物化。这,就是 prism-datagen。
+Deterministic, truth always recoverable, two knobs for difficulty, multi-modal export. This is prism-datagen.
+

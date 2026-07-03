@@ -1,0 +1,651 @@
+{
+  "source_id": "logistics_demo",
+  "seed": "ho-0",
+  "dirtiness": 0.6,
+  "link_explicitness": 4,
+  "roles": {
+    "hub_store": "warehouses",
+    "agent_store": "carriers",
+    "record_store": "shipments",
+    "metric_store": "throughput",
+    "record_hub_fk": "warehouse_id",
+    "record_agent_fk": "carrier_id",
+    "record_frame": "dispatch_frame",
+    "record_status": "status",
+    "record_ids_field": "shipment_ids",
+    "affected_status": "delayed"
+  },
+  "stores": {
+    "sql": {
+      "warehouses": [
+        {
+          "id": "WH-001",
+          "region": "华东",
+          "port": "宁波港",
+          "name": "华东中心仓"
+        },
+        {
+          "id": "WH-002",
+          "region": "华南",
+          "port": "盐田港",
+          "name": "华南中心仓"
+        },
+        {
+          "id": "WH-003",
+          "region": "华北",
+          "port": "天津港",
+          "name": "华北中心仓"
+        }
+      ],
+      "carriers": [
+        {
+          "id": "CR-001",
+          "name": "远洋速运"
+        },
+        {
+          "id": "CR-002",
+          "name": "华联物流"
+        },
+        {
+          "id": "CR-003",
+          "name": "中际货运"
+        },
+        {
+          "id": "CR-004",
+          "name": "顺捷供应链"
+        }
+      ],
+      "shipments": [
+        {
+          "id": "SHP-0001",
+          "warehouse_id": "WH-002",
+          "carrier_id": "CR-003",
+          "dispatch_frame": 45,
+          "weight_kg": 827.5,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0002",
+          "warehouse_id": "WH-003",
+          "carrier_id": "CR-003",
+          "dispatch_frame": 13,
+          "weight_kg": 2114.9,
+          "status": "on_time",
+          "unit": "lb"
+        },
+        {
+          "id": "SHP-0003",
+          "warehouse_id": "WH-001",
+          "carrier_id": "CR-003",
+          "dispatch_frame": 30,
+          "weight_kg": 662.1,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0004",
+          "warehouse_id": "WH-001",
+          "carrier_id": "CR-002",
+          "dispatch_frame": 26,
+          "weight_kg": 1693.6,
+          "status": "in_transit",
+          "unit": "lb"
+        },
+        {
+          "id": "SHP-0005",
+          "warehouse_id": "WH-002",
+          "carrier_id": "CR-003",
+          "dispatch_frame": 42,
+          "weight_kg": 931.0,
+          "status": "in_transit",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0006",
+          "warehouse_id": "WH-003",
+          "carrier_id": "CR-002",
+          "dispatch_frame": 18,
+          "weight_kg": 686.2,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0007",
+          "warehouse_id": "WH-003",
+          "carrier_id": "CR-004",
+          "dispatch_frame": 42,
+          "weight_kg": 502.5,
+          "status": "delayed",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0008",
+          "warehouse_id": "WH-001",
+          "carrier_id": "CR-002",
+          "dispatch_frame": 30,
+          "weight_kg": 611.8,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0009",
+          "warehouse_id": "WH-002",
+          "carrier_id": "CR-001",
+          "dispatch_frame": 33,
+          "weight_kg": 351.9,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0010",
+          "warehouse_id": "WH-002",
+          "carrier_id": "CR-004",
+          "dispatch_frame": 47,
+          "weight_kg": 826.5,
+          "status": "in_transit",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0011",
+          "warehouse_id": "WH-003",
+          "carrier_id": "CR-004",
+          "dispatch_frame": 46,
+          "weight_kg": 1738.3,
+          "status": "delayed",
+          "unit": "lb"
+        },
+        {
+          "id": "SHP-0012",
+          "warehouse_id": "WH-002",
+          "carrier_id": "CR-003",
+          "dispatch_frame": 30,
+          "weight_kg": 978.3,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0013",
+          "warehouse_id": "WH-001",
+          "carrier_id": "CR-004",
+          "dispatch_frame": 17,
+          "weight_kg": 391.2,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0014",
+          "warehouse_id": "WH-003",
+          "carrier_id": "CR-004",
+          "dispatch_frame": 25,
+          "weight_kg": 289.5,
+          "status": null,
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0015",
+          "warehouse_id": "WH-001",
+          "carrier_id": "CR-003",
+          "dispatch_frame": 56,
+          "weight_kg": 660.1,
+          "status": null,
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0016",
+          "warehouse_id": "WH-001",
+          "carrier_id": "CR-001",
+          "dispatch_frame": 36,
+          "weight_kg": 1277.6,
+          "status": null,
+          "unit": "lb"
+        },
+        {
+          "id": "SHP-0017",
+          "warehouse_id": "WH-003",
+          "carrier_id": "CR-003",
+          "dispatch_frame": 40,
+          "weight_kg": 165.7,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0018",
+          "warehouse_id": "WH-002",
+          "carrier_id": "CR-004",
+          "dispatch_frame": 56,
+          "weight_kg": 824.7,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0019",
+          "warehouse_id": "WH-001",
+          "carrier_id": "CR-001",
+          "dispatch_frame": 54,
+          "weight_kg": 606.4,
+          "status": null,
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0020",
+          "warehouse_id": "WH-002",
+          "carrier_id": "CR-002",
+          "dispatch_frame": 6,
+          "weight_kg": 170.0,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0021",
+          "warehouse_id": "WH-001",
+          "carrier_id": "CR-004",
+          "dispatch_frame": 42,
+          "weight_kg": 297.3,
+          "status": "on_time",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0022",
+          "warehouse_id": "WH-001",
+          "carrier_id": "CR-002",
+          "dispatch_frame": 9,
+          "weight_kg": 476.0,
+          "status": null,
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0023",
+          "warehouse_id": "WH-001",
+          "carrier_id": "CR-001",
+          "dispatch_frame": 47,
+          "weight_kg": 818.5,
+          "status": "delayed",
+          "unit": "kg"
+        },
+        {
+          "id": "SHP-0024",
+          "warehouse_id": "WH-003",
+          "carrier_id": "CR-003",
+          "dispatch_frame": 11,
+          "weight_kg": 661.2,
+          "status": "in_transit",
+          "unit": "lb"
+        }
+      ]
+    },
+    "timeseries": {
+      "throughput": {
+        "WH-001": [
+          541.6,
+          543.4,
+          535.7,
+          514.5,
+          511.1,
+          545.9,
+          595.5,
+          622.0,
+          621.8,
+          624.4,
+          643.4,
+          653.1,
+          626.0,
+          575.8,
+          541.9,
+          538.5,
+          540.0,
+          524.8,
+          510.6,
+          529.2,
+          577.9,
+          618.4,
+          627.3,
+          623.1,
+          633.5,
+          650.1,
+          639.9,
+          595.0,
+          549.0,
+          533.4,
+          538.4,
+          533.4,
+          516.4,
+          518.8,
+          558.0,
+          607.7,
+          630.8,
+          627.1,
+          627.0,
+          642.3,
+          646.4,
+          614.4,
+          563.2,
+          532.3,
+          532.8,
+          537.2,
+          280.3,
+          201.2,
+          295.1,
+          415.7,
+          628.8,
+          633.5,
+          626.1,
+          633.5,
+          645.5,
+          629.8,
+          582.2,
+          537.9,
+          526.5,
+          535.2
+        ],
+        "WH-002": [
+          722.6,
+          681.7,
+          632.6,
+          623.0,
+          623.0,
+          605.4,
+          585.2,
+          612.1,
+          658.4,
+          673.1,
+          674.9,
+          707.1,
+          744.9,
+          737.1,
+          702.1,
+          691.5,
+          692.2,
+          657.8,
+          607.5,
+          596.7,
+          616.5,
+          616.3,
+          604.7,
+          631.5,
+          685.3,
+          708.8,
+          702.2,
+          714.8,
+          742.1,
+          731.4,
+          684.2,
+          657.1,
+          657.1,
+          636.4,
+          593.8,
+          584.8,
+          617.6,
+          639.1,
+          636.5,
+          657.2,
+          708.9,
+          735.8,
+          719.9,
+          710.0,
+          723.3,
+          712.0,
+          660.8,
+          623.1,
+          625.0,
+          622.7,
+          595.1,
+          589.5,
+          630.4,
+          669.3,
+          673.7,
+          683.2,
+          723.6,
+          748.5,
+          724.5,
+          693.6
+        ],
+        "WH-003": [
+          624.6,
+          659.6,
+          663.5,
+          653.5,
+          652.9,
+          658.8,
+          646.8,
+          605.7,
+          557.2,
+          534.2,
+          544.4,
+          564.6,
+          572.7,
+          575.3,
+          596.0,
+          639.3,
+          678.9,
+          685.6,
+          660.4,
+          631.6,
+          618.9,
+          611.6,
+          587.8,
+          548.8,
+          523.4,
+          534.8,
+          573.0,
+          606.4,
+          619.1,
+          626.2,
+          647.7,
+          677.2,
+          685.8,
+          657.5,
+          610.9,
+          578.6,
+          570.9,
+          568.7,
+          553.7,
+          536.5,
+          544.4,
+          585.5,
+          634.3,
+          659.3,
+          657.3,
+          406.7,
+          343.1,
+          417.8,
+          466.2,
+          593.5,
+          593.5,
+          537.5,
+          551.9,
+          566.4,
+          568.0,
+          573.5,
+          603.6,
+          650.9,
+          683.2,
+          679.2
+        ]
+      },
+      "frames": 60
+    },
+    "news": [
+      {
+        "id": "NEWS-005",
+        "frame": 3,
+        "kind": "道路中断",
+        "headline": "华北道路中断提示",
+        "body": "HB近日道路中断,暂未见明显影响。",
+        "_truth_event": null
+      },
+      {
+        "id": "NEWS-003",
+        "frame": 11,
+        "kind": "台风封港",
+        "headline": "华东台风封港提示",
+        "body": "华東近日台风封港,暂未见明显影响。",
+        "_truth_event": null
+      },
+      {
+        "id": "NEWS-004",
+        "frame": 24,
+        "kind": "道路中断",
+        "headline": "华东道路中断提示",
+        "body": "华东区近日道路中断,暂未见明显影响。",
+        "_truth_event": null
+      },
+      {
+        "id": "NEWS-001",
+        "frame": 46,
+        "kind": "台风封港",
+        "headline": "台风封港快讯",
+        "body": "第 46 帧前后,某港口因台风封港临时停摆,吞吐骤降。",
+        "_truth_event": "EVT-1"
+      },
+      {
+        "id": "NEWS-002",
+        "frame": 47,
+        "kind": "道路中断",
+        "headline": "道路中断快讯",
+        "body": "第 47 帧前后,某港口因道路中断临时停摆,吞吐骤降。",
+        "_truth_event": "EVT-2"
+      },
+      {
+        "id": "NEWS-007",
+        "frame": 50,
+        "kind": "台风封港",
+        "headline": "华北台风封港提示",
+        "body": "华北区近日台风封港,暂未见明显影响。",
+        "_truth_event": null
+      },
+      {
+        "id": "NEWS-006",
+        "frame": 55,
+        "kind": "台风封港",
+        "headline": "华东台风封港提示",
+        "body": "华东近日台风封港,暂未见明显影响。",
+        "_truth_event": null
+      },
+      {
+        "id": "NEWS-008",
+        "frame": 56,
+        "kind": "台风封港",
+        "headline": "华南台风封港提示",
+        "body": "HNè¿æ¥å°é£å°æ¸¯,ææªè§ææ¾å½±åã",
+        "_truth_event": null
+      }
+    ]
+  },
+  "ground_truth": {
+    "events": [
+      {
+        "id": "EVT-1",
+        "warehouse_id": "WH-003",
+        "region": "华北",
+        "port": "天津港",
+        "frame": 46,
+        "kind": "台风封港",
+        "shipment_ids": [
+          "SHP-0007",
+          "SHP-0011"
+        ]
+      },
+      {
+        "id": "EVT-2",
+        "warehouse_id": "WH-001",
+        "region": "华东",
+        "port": "宁波港",
+        "frame": 47,
+        "kind": "道路中断",
+        "shipment_ids": [
+          "SHP-0023"
+        ]
+      }
+    ],
+    "answers": {
+      "explain_delays": {
+        "NEWS-001": [
+          "SHP-0007",
+          "SHP-0011"
+        ],
+        "NEWS-002": [
+          "SHP-0023"
+        ]
+      },
+      "anomaly_cause": {
+        "WH-003": {
+          "frame": 46,
+          "news": "NEWS-001"
+        },
+        "WH-001": {
+          "frame": 47,
+          "news": "NEWS-002"
+        }
+      }
+    },
+    "window": 4
+  },
+  "corruption_map": {
+    "aliases": {
+      "HB": "华北",
+      "华東": "华东",
+      "华东区": "华东",
+      "华北区": "华北",
+      "HN": "华南"
+    },
+    "weight_lb_ids": [
+      "SHP-0002",
+      "SHP-0004",
+      "SHP-0011",
+      "SHP-0016",
+      "SHP-0024"
+    ],
+    "status_nulled_ids": [
+      "SHP-0014",
+      "SHP-0015",
+      "SHP-0016",
+      "SHP-0019",
+      "SHP-0022"
+    ],
+    "news_time_offset": {},
+    "garbled_news": [
+      "NEWS-008"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "explain_delays",
+      "q": "哪些延误运单能由哪条新闻事件解释?",
+      "q_en": "Which delayed shipments does which news event explain?",
+      "needs": [
+        "news",
+        "timeseries",
+        "sql"
+      ],
+      "answer_kind": "event_to_shipments"
+    },
+    {
+      "id": "anomaly_cause",
+      "q": "每个仓库的吞吐量异常发生在哪一帧,由哪条新闻引起?",
+      "q_en": "When did each warehouse's throughput anomaly occur, and which news caused it?",
+      "needs": [
+        "timeseries",
+        "news"
+      ],
+      "answer_kind": "warehouse_to_event_frame"
+    }
+  ],
+  "manifest": {
+    "source_id": "logistics_demo",
+    "title": "物流跨源数据包",
+    "seed": "ho-0",
+    "dirtiness": 0.6,
+    "link_explicitness": 4,
+    "counts": {
+      "warehouses": 3,
+      "carriers": 4,
+      "shipments": 24,
+      "news": 8,
+      "frames": 60,
+      "ground_truth_events": 2
+    },
+    "scope": "DP1 = 确定性生成器 + 跨源真值 + 脏度/link 显眼度旋钮 + 判别力探针。未做:§4b 真实校准(分布为手设合成,非逆向自真实数据)、§5 agentic 解析器、§3 PDF/NoSQL 多模态、RESEARCH 的 LLM-ablation 基准。",
+    "honesty": "真值始终保留;脏度与 link 显眼度只动观测。realistic-calibration 未做,数理分布是手设示意。"
+  }
+}

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+# demo build intermediates (keep the final mp4 + scripts + srt)
+demo/assets/
+demo/video/
+demo/master.wav
+# CLI scratch output
+out/
