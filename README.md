@@ -27,6 +27,8 @@
 
 ## 演示
 
+![22 秒高光:脏度旋钮、显眼度扫描与判别力、真值链悬停联动](demo/demo-highlights.gif)
+
 [3 分半讲解视频，中文旁白 + 中英字幕](demo/prism-datagen-demo.mp4)
 
 ![界面总览:左侧是评分与真值链,右侧是三种数据源](docs/screenshots/01_overview.png)
