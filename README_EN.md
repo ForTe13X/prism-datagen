@@ -27,7 +27,7 @@ The same seed always produces the same package byte-for-byte, which makes runs c
 
 ## Demo
 
-![22-second highlights: dirtiness sweep, link-explicitness sweep with live discriminability bars, and the truth-chain hover cross-highlight](demo/demo-highlights.gif)
+![23-second highlights: dirtiness sweep, link-explicitness sweep with live discriminability bars, and the truth-chain hover cross-highlight](demo/demo-highlights.gif)
 
 [3.5-minute walkthrough video, Chinese narration with bilingual subtitles](demo/prism-datagen-demo.mp4)
 
@@ -42,8 +42,13 @@ Hovering a ground-truth chain highlights the corresponding evidence across sourc
 Python 3.10 or newer is required.
 
 ```bash
+# Generate a package, print a readable preview, and score the built-in solvers
 python -m datagen gen -d 0.6 -l 4 -s ho-0 --eval
+
+# Export JSON, CSV, and SQLite
 python -m datagen gen -d 0.6 -s ho-0 -o out -f all
+
+# Sweep a difficulty control
 python -m datagen sweep --over dirtiness
 ```
 
@@ -73,6 +78,8 @@ The project includes three reference solvers:
 - `oracle`: reads the embedded answer and should always score 1.0.
 - `naive`: uses literal matching and mostly single-source evidence.
 - `linked`: uses deterministic cross-source alignment over entity, place, and time clues.
+
+When the link stops being explicit, the naive solver collapses while the linked solver stays useful:
 
 | Explicitness | naive F1 | linked F1 |
 |---|---:|---:|
