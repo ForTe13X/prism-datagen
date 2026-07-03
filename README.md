@@ -25,6 +25,8 @@ The same seed always produces the same package byte-for-byte, which makes runs c
 
 ## Demo
 
+![22-second highlights: dirtiness sweep, link-explicitness sweep with live discriminability bars, and the truth-chain hover cross-highlight](demo/demo-highlights.gif)
+
 [3.5-minute walkthrough video, Chinese narration with bilingual subtitles](demo/prism-datagen-demo.mp4)
 
 ![界面总览:左侧是评分与真值链,右侧是三种数据源](docs/screenshots/01_overview.png)
